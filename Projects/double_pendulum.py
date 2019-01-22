@@ -37,10 +37,10 @@ class Pendulum:
 		pass
 
 	# Apply arbitrary forces
-	def apply_force(self, force, **force_args):
+	def apply_force(self, force, *force_nargs, **force_kwargs):
 		cartesian_acc = [] 
-		cartesian_acc.append(force(**force_args)[0]/self.mass)
-		cartesian_acc.append(force(**force_args)[1]/self.mass)
+		cartesian_acc.append(force(*force_nargs, **force_args)[0]/self.mass)
+		cartesian_acc.append(force(*force_nargs, **force_args)[1]/self.mass)
 
 		self.angular_acc += np.arctan2(cartesian_acc[1], cartesian_acc[0])
 
@@ -52,7 +52,7 @@ class Pendulum:
 		if all:
 			print("mass is %d"% (self.mass))
 			print("length is %d"% (self.length))
-		print("pivot is %d"% (self.pivot))
+			print("pivot is %d"% (self.pivot))
 		print("angle is %d"% (self.angle))
 		print("angular velocity is %d"% (self.angular_vel))
 
@@ -95,9 +95,8 @@ pend1.__init__()
 pend2.__init__(pivot=pend1.get_position)
 
 # PHYSICS
-# cartesian gravity
+# gravity
 g = 1
-
 
 # PREPPING SIMULATION
 simulation_time = 10
@@ -121,7 +120,6 @@ while(t < simulation_time):
 positions = []
 while(t < simulation_time):
 	pend2.apply_force(g)
-
 	pend1.apply_force(g)
 	pend1.apply_force(-pend2.force_from_pivot(g)[0])
 

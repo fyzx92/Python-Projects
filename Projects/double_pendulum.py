@@ -39,8 +39,8 @@ class Pendulum:
 	# Apply arbitrary forces
 	def apply_force(self, force, *force_nargs, **force_kwargs):
 		cartesian_acc = [] 
-		cartesian_acc.append(force(*force_nargs, **force_args)[0]/self.mass)
-		cartesian_acc.append(force(*force_nargs, **force_args)[1]/self.mass)
+		cartesian_acc.append(force(*force_nargs, **force_kwargs)[0]/self.mass)
+		cartesian_acc.append(force(*force_nargs, **force_kwargs)[1]/self.mass)
 
 		self.angular_acc += np.arctan2(cartesian_acc[1], cartesian_acc[0])
 
@@ -105,6 +105,7 @@ t = 0.0
 
 # RUNNING SIMULATION 1 Analytic accel
 positions = []
+#for t in list(np.arange(0, simulation_time, dt)):
 while(t < simulation_time):
 	aa = double_pend.get_ang_acc(double_pend.p1, double_pend.p2, g)
 	double_pend.p1.update_angle(aa[0])
@@ -117,7 +118,9 @@ while(t < simulation_time):
 	t += dt
 
 # RUNNING SIMULATION 2 Simulated accel
+t = 0.0
 positions = []
+#for t in list(np.arange(0, simulation_time, dt)):
 while(t < simulation_time):
 	pend2.apply_force(g)
 	pend1.apply_force(g)
@@ -132,3 +135,5 @@ while(t < simulation_time):
 	positions.append((pend1.get_position(), pend2.get_position()))
 
 	t += dt
+
+# ANIMATION

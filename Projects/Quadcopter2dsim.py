@@ -12,34 +12,36 @@ class Propeller():
         self.rps_range = [0,1000]
         self.rps = 0
     def thrust(self, speed_change):
-        self.rps += max(0,new_speed)
+        self.rps += max(0, speed_change)
 
 class Quadcopter():
     def ___init___(self):
         self.prop1 = Propeller()
+        self.prop1.__init__()
         self.prop2 = Propeller()
+        self.prop2.__init__()
 
-        self.arm1_coord_local = [2,0]
-        self.arm2_coord_local = [-2,0]
+        self.arm1_coord_local = (2,0)
+        self.arm2_coord_local = (-2,0)
 
         self.mass = 3 + self.prop1.mass + self.prop2.mass
 
 
 
 
-    def controller():
+    def Controller(self):
 
         def local_to_global(lpos, angle):
-            return (lpos[0]-lpos[1]*tan(angle))/(1-sin(angle)*tan(angle))
+            return (lpos[0]-lpos[1]*math.tan(angle))/(1-math.sin(angle)*math.tan(angle))
 
         def global_to_local(gpos, angle):
-            return (gpos[0]-gpos[1]*tan(angle))/(1-sin(angle)*tan(angle))
+            return (gpos[0]-gpos[1]*math.tan(angle))/(1-math.sin(angle)*math.tan(angle))
         #position change stimulated by accel, inhibited by momentum/vel
 
         # gives force in x/y, not left/right rotors
         F = K_p*(target_pos - copter_pos) + K_v*(target_vel - copter_vel) + g
 
-        traj_angle = atan(F[1]/F[0]) + atan(target_vel[1]/target_vel[0])#direction of approach
+        traj_angle = math.atan2(F[1]/F[0]) + math.atan2(target_vel[1]/target_vel[0])#direction of approach
 
         # creates rotational force on copter
         T = prop1.rps*prop1.arm1_coord_local - prop2.rps*prop2.arm2_coord_local

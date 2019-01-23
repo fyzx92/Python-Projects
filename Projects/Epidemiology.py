@@ -31,16 +31,16 @@ class Box():
 class City():
 	def __init__(self, n_unf, n_inf, n_rec = 0, n_dead = 0, connections = None):
 		self.uninfected = Box()
-		self.uninfected.n = n_unf
+		self.uninfected.__init__(n_unf)
 
 		self.infected = Box()
-		self.infected = n_inf
+		self.infected.__init__(n_inf)
 		
 		self.recovered = Box()
-		self.recovered = n_rec
+		self.recovered.__init__(n_rec)
 		
 		self.dead = Box()
-		self.dead = n_dead
+		self.dead.__init__(n_dead)
 
 		self.total = self.uninfected.n + self.infected.n + self.recovered.n + self.dead.n
 		if connections == None: self.con = []
@@ -51,44 +51,39 @@ class City():
 		die(disease)
 		research(disease)
 
-		def infect(self, d, prob_fn = "ratio"):
+		def infect(self, disease, prob_fn = "ratio"):
 			# [ ] TODO include option to be dependent upon number dead
 			if prob_fn == "ratio":
-				new_infected = d.infect_prob   * self.uninfected.n * self.infected.n/(self.uninfected.n + self.infected.n)
-				reinfected   = d.reinfect_prob * self.recovered.n  * self.infected.n/(self.recovered.n  + self.infected.n) 
+				new_infected = disease.infect_prob   * self.uninfected.n * self.infected.n/(self.uninfected.n + self.infected.n)
+				reinfected   = disease.reinfect_prob * self.recovered.n  * self.infected.n/(self.recovered.n  + self.infected.n) 
 
 			elif prob_fn == "erf": 
-				new_infected = d.infect_prob   * self.uninfected.n * math.erf(self.infected.n/self.uninfected)
-				reinfected   = d.reinfect_prob * self.recovered.n  * math.erf(self.infected.n/self.recovered)
+				new_infected = disease.infect_prob   * self.uninfected.n * math.erf(self.infected.n/self.uninfected)
+				reinfected   = disease.reinfect_prob * self.recovered.n  * math.erf(self.infected.n/self.recovered)
 
-			self.uninfected.transfer_people(new_infected, self.infected.n)
+			self.uninfected.transfer_people(new_infected, self.infected)
 			self.recovered.transfer_people(reinfected, self.infected)
 
-		def recover(self, d):
-			new_recovered = d.recov_prob * self.infected
+		def recover(self, disease):
+			new_recovered = disease.recov_prob * self.infected
 			self.infected.transfer_people(new_recovered, self.recovered)
 			
-		def die(self, d):
-			died = d.death_prob * self.infected
+		def die(self, disease):
+			died = disease.death_prob * self.infected
 			self.infected.transfer_people(died, self.dead)
 
-		def research(self):
+		def research(self, disease):
 			pass
 		
 	# [ ] TODO Ugly, needs fixing
 	# Transfer from any self box to a connection's box of same type
-	def travel(self, n_people, b1, b2):
-		b1.transfer_people(n_people, b2)
+	def travel(self, n_people, box1, box2):
+		box1.transfer_people(n_people, box2)
 	
 	# [ ] TODO implement ability to conduct research with connected cities
-	def research(self, d):
+	def research(self, disease):
 		pass
 	
-	def remove_connection(self):
-		pass
-
-	def add_connection(self):
-		pass
 
 # Geographic and transportation linkage of cities
 class Graph():
@@ -113,6 +108,12 @@ class Graph():
 			# Make city connection lists ordered
 			city1.con = list(set(city1.con))
 			city2.con = list(set(city2.con))
+
+	def remove_connection(self, city):
+		pass
+
+	def add_connection(self, city):
+		pass
 
 
 # Initialize disease

@@ -15,26 +15,26 @@
 
 
 # PURE
-key_map =       [["a","e","i","o","u","y"]
-				["1","2","3","4","5","6","7","8","9","0"]
-				["`","-","=","\t","[","]","delete"]
-				["\\",";","'",",",".","/"," "]
+key_map =       (("a","e","i","o","u","y")
+				("1","2","3","4","5","6","7","8","9","0")
+				("`","-","=","\t","[","]","delete")
+				("\\",";","'",",",".","/"," ")
 
-				["j","m","n","s","t","z"]
-				["b","d","f","p","v"]
-				["c","g","k","q","x"]
-				["h","r","l","w"]]
+				("j","m","n","s","t","z")
+				("b","d","f","p","v")
+				("c","g","k","q","x")
+				("h","r","l","w"))
 
 
-shift_key_map = [["A","E","I","O","U","Y"]
-				["!","@","#","$","%","^","&","*"]
-				["~","_","+","{","}","(",")", "exit"]
-				["|",":","\"","<",">","?","\n"]
+shift_key_map = (("A","E","I","O","U","Y")
+				("!","@","#","$","%","^","&","*")
+				("~","_","+","{","}","(",")", "exit")
+				("|",":","\"","<",">","?","\n")
 
-				["J","M","N","S","T","Z"]
-				["B","D","F","G","P","V"]
-				["C","K","Q","X"]
-				["H","L","R","W"]]
+				("J","M","N","S","T","Z")
+				("B","D","F","G","P","V")
+				("C","K","Q","X")
+				("H","L","R","W"))
 
 
 # ALT TRUNCATED
@@ -65,13 +65,11 @@ shift_key_map_alt = (("A","E","I","O","U","Y")
 
 
 def get_key_input(button_1, shift=False):
-	button_press_1 = button_1
-	button_press_2 = input()
-	if ~shift:
-		return key_map[button_press1][button_press2]
-
+	button_2 = input()
+	if shift:
+		return shift_key_map[button_1][button_]
 	else:
-		return shift_key_map[button_press1][button_press2]
+		return key_map[button_1][button_2]
 
 
 
@@ -81,16 +79,18 @@ def controller_keyboard():
 	running = True
 	while(running):
 		if button_pressed() and shift_pressed():
-			command = get_key_input(button, True)
+			command = get_key_input(button, shift=True)
 
 		elif button_pressed():
 			command = get_key_input(button)
 
-		if command = exit_command:
+		if command == exit_command:
 			running = False
 			break
 
 
 def button_pressed():
+	pass
 
 def shift_pressed():
+	pass

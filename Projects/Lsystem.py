@@ -6,13 +6,15 @@
 
 from random import random as rand
 
-def apply_axioms(string_in):
-    string_out = ""
-    for c in string_in:
-        if c == "a":
-            string_out += "ab"
-        elif c == "b":
-            string_out += "a"
+def apply_axioms(string_in, iter = 1):
+    for i in list(range(iter)):
+        string_out = ""
+        for c in string_in:
+            if c == "a":
+                string_out += "ab"
+            elif c == "b":
+                string_out += "a"
+        string_in = string_out
     return string_out
 
 
@@ -42,3 +44,9 @@ def gen_start_str (method = "simple", input_str = None, str_length = 3, char_lis
             start_str = str(input("please enter a string of valid characters: " + str(char_list) + "\n"))
 
     return start_str
+
+
+string = gen_start_str()
+for i in list(range(20)):
+    print(string)
+    string = apply_axioms(string)

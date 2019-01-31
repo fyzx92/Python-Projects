@@ -27,8 +27,8 @@ class Pendulum:
 		return self.position
 	
 	# Euler integration to get angle from acceleration
-	def update_angle(self, angular_accel):
-		self.angular_vel += angular_accel
+	def update_angle(self):
+		self.angular_vel += self.angular_acc
 		self.angle += self.angular_vel
 	
 	# [TODO] Runge Kutta integration alternative
@@ -73,7 +73,8 @@ class Double_Pend():
 		num4 = self.p2.angular_vel**2 * self.p2.length + self.p1.angular_vel**2 * self.p1.length * cos(self.p1.angle - self.p2.angle)
 		den = 2*self.p1.mass + self.p2.mass*(1-cos(2*(self.p1.angle-self.p2.angle)))
 
-		aa1 = (num1 + num2 + num3*num4)/(p1.length*den)
+		self.p1.angular_acc = (num1 + num2 + num3*num4)/(p1.length*den)
+		
 
 
 		num1 = 2*sin(p1.angle-p2.angle)
@@ -81,59 +82,133 @@ class Double_Pend():
 		num3 = g*(p1.mass+p2.mass)*cos(p1.angle)
 		num4 = p2.angular_vel**2 * p2.length * p2.mass * cos(p1.angle - p2.angle)
 
-		aa2 = num1*(num2 + num3 + num4)/(p2.length*den)
+		self.p1.angular_acc = num1*(num2 + num3 + num4)/(p2.length*den)
 
-		return [aa1, aa2]
+
+	def copy_modify(self, angle_diff = [0,0], av_diff = [0,0], aa_diff = [0,0]):
+		# copy step
+		copy = Double_Pend()
+		copy.origin = self.origin
+		copy.p1 = self.p1
+		copy.p2 = self.p2
+
+		# modify step
+		copy.p1.angle += angle_diff[0]
+		copy.p1.angular_vel += av_diff[0]
+		copy.p1.angular_acc += aa_diff[0]
+
+		copy.p2.angle += angle_diff[1]
+		copy.p2.angular_vel += av_diff[1]
+		copy.p2.angular_acc += aa_diff[1]
+		return copy
 
 
 # INITIALIZING
 double_pend = Double_Pend()
 
-pend1 = Pendulum()
-pend2 = Pendulum()
-pend1.__init__()
-pend2.__init__(pivot=pend1.get_position)
+dp_copies = []
+for i in range(10):
+	dp_copies.append(Double_Pend())
+
+
+#pend1 = Pendulum()
+#pend2 = Pendulum()
+#pend1.__init__()
+#pend2.__init__(pivot=pend1.get_position)
+
+# split by error or time interval
+split_by_error = True
+split_by_time = ~split_by_error
 
 # PHYSICS
 # gravity
 g = 1
 
 # PREPPING SIMULATION
-simulation_time = 10
-dt = 0.01
-t = 0.0
+simulation_time = 7000
+measure_time = 100
+t = 0
+
+# allowed error
+apos_error_threshold = pi/20.0
+avel_error_threshold = pi/100.0
+aacc_error_threshold = pi/50.0
 
 # RUNNING SIMULATION 1 Analytic accel
 positions = []
 #for t in list(np.arange(0, simulation_time, dt)):
 while(t < simulation_time):
-	aa = double_pend.get_ang_acc(double_pend.p1, double_pend.p2, g)
-	double_pend.p1.update_angle(aa[0])
-	double_pend.p2.update_angle(aa[1])
+	double_pend.get_ang_acc(double_pend.p1, double_pend.p2, g)
+	double_pend.p1.update_angle()
+	double_pend.p2.update_angle()
 
 	double_pend.p2.pivot = double_pend.p1.get_position()
 
 	positions.append((double_pend.p1.get_position(), double_pend.p2.get_position()))
 
-	t += dt
+	#if split_by_error:
+	#	if abs(apos_error) > apos_error_threshold:
+	#		pass
+	#	if abs(avel_error) > apos_error_threshold:
+	#		pass
+	#	if abs(aacc_error) > apos_error_threshold:
+	#		pass
+	#elif split_by_time:
+	#	if t%measure_time == 0:
+			# find values
+			# find close pendulums
+			# (alt: find error each time, note when error is large)
+
+	#		pass
+
+	t += 1
 
 # RUNNING SIMULATION 2 Simulated accel
-t = 0.0
+t = 0
+
+# allowed error
+apos_error_threshold = pi/20.0
+avel_error_threshold = pi/100.0
+aacc_error_threshold = pi/50.0
+
+# record positions of pendulums
 positions = []
 #for t in list(np.arange(0, simulation_time, dt)):
 while(t < simulation_time):
-	pend2.apply_force(g)
-	pend1.apply_force(g)
-	pend1.apply_force(-pend2.force_from_pivot(g)[0])
+	double_pend.p2.apply_force(g)
+	double_pend.p1.apply_force(g)
+	double_pend.p1.apply_force(-double_pend.p2.force_from_pivot(g)[0])
 
-	pend1.update_angle(aa[0])
-	pend2.update_angle(aa[1])
+	double_pend.p1.update_angle()
+	double_pend.p2.update_angle()
 
-	pend1.pivot = [0,0]
-	pend2.pivot = pend1.get_position()
+	double_pend.p1.pivot = [0,0]
+	double_pend.p2.pivot = double_pend.p1.get_position()
 
-	positions.append((pend1.get_position(), pend2.get_position()))
+	positions.append((double_pend.p1.get_position(), double_pend.p2.get_position()))
 
-	t += dt
+	#apos_error = [double_pend.p1.angle- , double_pend.p2.angle-]
+	#avel_error = 
+	#aacc_error = 
+
+	#if split_by_error:
+	#	if abs(apos_error) > apos_error_threshold or abs(avel_error) > apos_error_threshold or abs(aacc_error) > apos_error_threshold:
+	#		pass
+
+	#elif split_by_time:
+	#	if t%measure_time == 0:
+			# find values
+			# find close pendulums
+			# (alt: find error each time, note when error is large)
+
+	#		pass
+
+	t += 1
+
+
+
+
+
+
 
 # ANIMATION

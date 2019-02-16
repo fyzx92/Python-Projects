@@ -6,8 +6,8 @@
 
 from random import random as rand
 
-def apply_axioms(string_in, iter = 1):
-    for i in list(range(iter)):
+def apply_axioms1(string_in, iter = 1):
+    for i in range(iter):
         string_out = ""
         for c in string_in:
             if c == "a":
@@ -17,6 +17,18 @@ def apply_axioms(string_in, iter = 1):
         string_in = string_out
     return string_out
 
+def apply_axioms2(string_in, iter = 1, probA = 0.8, probB = 0.95):
+    for i in range(iter):
+        string_out = ""
+        for c in string_in:
+            if c == "a":
+                if rand() < probA:
+                    string_out += "ab"
+            elif c == "b":
+                if rand() < probB:
+                    string_out += "a"
+        string_in = string_out
+    return string_out
 
 def gen_start_str (method = "simple", input_str = None, str_length = 3, char_list = ["a","b"]):
     char_list = list(set(char_list))
@@ -47,6 +59,6 @@ def gen_start_str (method = "simple", input_str = None, str_length = 3, char_lis
 
 
 string = gen_start_str()
-for i in list(range(20)):
+for i in range(20):
     print(string)
-    string = apply_axioms(string)
+    string = apply_axioms1(string)

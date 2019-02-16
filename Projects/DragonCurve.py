@@ -103,7 +103,7 @@ class Fractal():
                         if self.seg_list_old[ (int)(len(self.seg_list_new)/2) ] == self.dictionary[(j-1)%8]:
                             next_char = (j-2)%8
 
-                        .append(next_char)
+                        self.seg_list_new.append(next_char)
 
 
 #    for i in self.seg_list_old:

@@ -17,6 +17,9 @@ class Creature(object):
         child = Creature(genes_passed)
         return child
 
+    def getPhenotype(self):
+        pass
+
     def calcFitness(self, target): # need better algorithm for this
         score = 0
         for i in target:
@@ -47,3 +50,13 @@ class Genes(object):
             if random.random() <= prob:
                 mutated_genes[i] = random.choice(Genes.possible_genes)
         return mutated_genes
+
+class Phenotype(Genes):
+    def __init__(self, _genes):
+        self.genes = _genes.genes
+
+    def interpret(self):
+        pass
+
+    def fitness(self, env):
+        pass

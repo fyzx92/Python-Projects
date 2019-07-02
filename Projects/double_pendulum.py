@@ -15,6 +15,11 @@ from math import pi, sin, cos
 
 
 def AddVectors(*x):
+    """
+    *x: list of vectors to add together
+
+    returns the resulting vector sum
+    """
     out = [0]*len(x[0])
     for i in x:
         k = 0
@@ -28,6 +33,7 @@ def AddVectors(*x):
 
 # ESTABLISHING CLASSES
 class Pendulum:
+
     # initiate starting position and constant parameters
     def __init__(self,
                  pivot = [0,0],
@@ -35,6 +41,13 @@ class Pendulum:
                  mass = 1,
                  length = 1,
                  angular_vel = 0):
+        """
+        pivot: location of pivot in cartesian coordinates
+        angle: starting angle for the pendulum (radians?)
+        mass: mass at the end of the pendulum
+        length: length of the pendulum
+        angular_vel: starting angular velocity
+        """
         
         self.mass = mass
         self.angle = angle # measured clockwise from downard y axis
@@ -44,8 +57,11 @@ class Pendulum:
         self.pivot = pivot
         self.position = self.get_position()
         
-    #calculate position (x,y) of the pendulum
+    # Calculate position (x,y) of the pendulum
     def get_position(self):
+        """
+        return the cartesian coordinates of the end point of the pendulum
+        """
         self.position = [self.pivot[0] + self.length*sin(self.angle), 
                          self.pivot[1] - self.length*cos(self.angle)]
         
@@ -55,29 +71,45 @@ class Pendulum:
         return self.position
     
     def get_angle(self):
+        """
+        return the angle of the pendulum
+        """
         return self.angle
 
-    # Euler integration to get angle from acceleration
     def update_angle(self):
+        """
+        Euler integration to get angle from acceleration
+        """
         self.angular_vel += self.angular_acc
         self.angle += self.angular_vel
         
-    # Apply arbitrary force
     def apply_force(self, force, *force_args, **force_kwargs):
+        """
+        Apply arbitrary force
+        """
         if not force: return
         
-        f = force
         if force_args or force_kwargs:
-            f = force(*force_args, **force_kwargs)
-        f[:] = [i / self.mass for i in f]
+            force = force(*force_args, **force_kwargs)
+        force[:] = [i / self.mass for i in force]
         
         self.angular_acc += np.arctan2(f[1], f[0])
 
     def force_from_pivot(self, g):
+        """
+        g: strength of gravity
+
+        return the forces acting on a pendulum from connected pivot
+        """
         return [-self.mass*self.g[0]*cos(self.angle)*sin(self.angle), 
                 -self.mass*self.g[0]*cos(self.angle)*cos(self.angle)]
     
     def force_on_pivot(self, g):
+        """
+        g: strength of gravity
+        
+        return the force acting on the pivot from the pendulum
+        """
         # f = force_from_pivot(g)
         # f = [-i for i in f]
         # return f
@@ -86,6 +118,11 @@ class Pendulum:
 
     # Print data about pendulum
     def print_status(self, all = False):
+        """
+        all: whether to print all attributes
+
+        print the attributes of the pendulum
+        """
         if all:
             print("mass is %d"% (self.mass))
             print("length is %d"% (self.length))
@@ -102,6 +139,9 @@ class Double_Pend():
         self.positions = []
 
     def get_ang_acc(self, g=[0,-1]):
+        """
+        from the position of each pendulum, calculate the angular acceleration
+        """
         # TODO one should be p1 the other should be p2 - which is which?
         num1 = -g[1]*(2*self.p1.mass + self.p2.mass)*sin(self.p1.angle)
         num2 = -self.p2.mass*g[1]*sin(self.p1.angle-2*self.p2.angle)
@@ -120,6 +160,11 @@ class Double_Pend():
 
 
     def copy_modify(self, angle_diff = [0,0]):
+    """
+    angle_diff: how much to change the angles for the new pendulum
+
+    copy and edit a double pendulum
+    """
         #copy step
         copy = Double_Pend()
         copy.origin = self.origin
@@ -135,6 +180,9 @@ class Double_Pend():
     def record(self):
         self.positions.append((self.p1.get_position(), self.p2.get_position()))
     
+    def record_angle(self):
+        self.positions.append((self.p1.get_angle(), self.p2.get_angle()))
+
     def record_to_file(self):
         pass
     
@@ -177,63 +225,109 @@ class Simulation():
     def simulate_error_split(self,
                              sim = simulate_numeric,
                              measure_error = pi/100,
-                             n_pends = 10,
+                             n_pends = 2,
                              error_threshold = pi/20.0 # angle
                              # error_threshold = 0.1 # position
                              ):
+        """
+        sim: a function for how to calculate one step of the simulation
+        measure_error: error range in each measurement
+        error_threshold: error at which to start simulating a closer pendulum
+
+        simulate the error, and take measurements at regular time intervals
+        """
         
-        dps = []
-        for i in range(-n_pends/2,0):
-            dps.append(self.d)
-            dps[i] = dps[i].copy_modify([0, measure_error*i/n_pends])
-            
-        for i in range(1,n_pends/2+1):
-            dps.append(self.d)
-            dps[i] = dps[i].copy_modify([0, measure_error*i/n_pends])
-            
+
+        dp_true = self.d
+        dp_neg = self.d.copy_modify[-measure_error/2, -measure_error/2])
+        dp_pos = self.d.copy_modify[measure_error/2, measure_error/2])
+    
         for t in range(self.duration):
             
-            sim(self.d)
-            for i in range(len(dps)):
-                sim(dps[i])
+            sim(dp_true)
+            sim(dp_neg)
+            sim(dp_pos)
+            
             # Record positions
-            self.d.record()
-            for i in range(len(dps)):
-                dps[i].record()
+            dp_true.record()
+            dp_neg.record()
+            dp_pos.record()
                     
-            #find errors
-            for i in range(len(dps)):
-                error = [0,0]
+            # calculate errors in angles
+            pos_error = [0,0] 
+            pos_error[0] += dp_true.p1.get_angle() - dp_pos.p1.get_angle()
+            pos_error[1] += dp_true.p2.get_angle() - dp_pos.p2.get_angle()
                 
-                # use get_position
-                error[0] += np.sqrt(abs(self.d.p1.get_position()[0]**2 - 
-                                dps[i].p1.get_angle()[0]**2))
-                
-                error[0] += np.sqrt(abs(self.d.p1.get_position()[1]**2 - 
-                                dps[i].p1.get_angle()[1]**2))
-                
-                error[1] += np.sqrt(abs(self.d.p2.get_position()[0]**2 - 
-                                dps[i].p1.get_angle()[0]**2))
-                
-                error[1] += np.sqrt(abs(self.d.p2.get_position()[1]**2 - 
-                                dps[i].p1.get_angle()[1]**2))
-                
-                # use angles
-                error[0] += self.d.p1.get_angle() - dps[i].p1.get_angle()
-                error[1] += self.d.p2.get_angle() - dps[i].p2.get_angle()
-                
+            neg_error = [0,0] 
+            neg_error[0] += dp_true.p1.get_angle() - dp_neg.p1.get_angle()
+            neg_error[1] += dp_true.p2.get_angle() - dp_neg.p2.get_angle()
             
-            if error[0] > error_threshold or error[1] > error_threshold:
-                # make new pendulums with smaller initial error
-                dps = []
-                for i in range(-n_pends/2,0):
-                    dps.append(self.d)
-                    dps[i] = dps[i].copy_modify([0, error_threshold*i/n_pends])
-            
-                for i in range(1,n_pends/2+1):
-                    dps.append(self.d)
-                    dps[i] = dps[i].copy_modify([0, error_threshold*i/n_pends])
+            if any(pos_error > error_threshold):
+                # record t, with note of initial conditions
 
+                # reinitialize dp_pos with smaller error
+                dp_pos = # initial state of true with smaller error deviation
+                
+                # simulate dp_pos up to current time (still checking errors
+                for u in range(t):
+                    sim(dp_pos)
+
+            if any(neg_error > error_threshold):
+                # record t, with note of initial conditions
+
+                # reinitialize dp_neg with smaller error
+                dp_neg = # initial state of true with smaller error deviation
+                
+                # simulate dp_neg up to current time (still checking errors)
+                for u in range(t):
+                    sim(dp_neg)
+
+
+
+
+    def simulate_time_split(self,
+                            sim = simulate_numeric,
+                            measure_time = 100,
+                            measure_error = pi/100,
+                            n_pends = 10
+                            ):
+        """
+        sim: whether to solve numerically or analytically
+        measure_time: how often to take measurements
+        measure_error: error range in each measurement
+        n_pends: number of pendulums to simulate
+
+        simulate the error, and take measurements at regular time intervals
+        """
+        
+        dp_true = self.d
+        dps = []
+        for i in range(n_pends):
+            dps.append(self.d)
+            dps[i] = dps[i].copy_modify([0, measure_error*i/n_pends])
+        ref = n_pends//2
+            
+        # List for recording large errors
+        # ???
+
+        # Run simulation
+        for t in range(self.duration):
+            
+            # Simulate
+            sim(dp_true)
+            for i,p in enumerate(dps):
+                sim(dps[i])
+            
+            # Check timing intervals
+            if t % measure_time == 0:
+                
+                # Record positions
+                for i,d in enumerate(dps):
+                    self.d.record_angle()
+                
+                # Check if out of error bounds
+                for i,d in enumerate(dps):
+                     if abs(dps[i] - dps[0]) > measure_error
 
 
     def simulate_time_split(self,

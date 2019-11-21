@@ -1,0 +1,10 @@
+# don't include prebuilt ostagram method
+./ostagram-develop/**
+
+
+# don't include materials science prebuilt method
+./mat2vec-master/**
+
+
+# exclude existing double pendulum animation
+./double_pendulum_matplotlib.py

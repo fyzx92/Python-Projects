@@ -35,6 +35,11 @@ import gleam
 import missingno
 
 
+https://stanfordmlgroup.github.io/competitions/chexpert/
+https://aimi.stanford.edu/research/public-datasets
+https://www.kaggle.com/c/data-science-bowl-2017/data
+https://nihcc.app.box.com/v/ChestXray-NIHCC/folder/37178474737
+https://www.radrounds.com/profiles/blogs/list-of-open-access-medical-imaging-datasets
 
 
 

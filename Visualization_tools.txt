@@ -1,6 +1,0 @@
-Cairo
-Matplotlib.pyplot
-SDL
-
-
-

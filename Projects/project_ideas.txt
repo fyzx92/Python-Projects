@@ -1,0 +1,23 @@
+
+physical laws- basic simulation, option to remove any term and see what happens
+
+Animate:
+Maxwell
+General Relativity
+Quantum Mechanics
+Navier Stokes
+
+Analyze:
+UNICEF
+data.gov.uk
+SEER cancer
+CDC cause of death
+Bureau Labor Statistics
+FBI Crimes
+Medicine Quality
+
+Build/apply:
+Recurrent Networks
+Belief Networks
+Convolutional Networks
+Natural Language Processing

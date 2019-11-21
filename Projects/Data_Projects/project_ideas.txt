@@ -1,0 +1,83 @@
+https://www.analyticsvidhya.com/blog/2018/05/24-ultimate-data-science-projects-to-boost-your-knowledge-and-skills/
+https://www.analyticsindiamag.com/popular-data-science-projects-for-aspiring-data-scientists/
+https://www.analyticsvidhya.com/blog/2014/11/data-science-projects-learn/
+https://towardsdatascience.com/5-resources-to-inspire-your-next-data-science-project-ea6afbe20319
+
+[x] Machine Learning and Modeling - supervised, unsupervised, reinforcement
+[ ] Exploratory analysis
+[x] metrics and experimentation
+[o] Data visualization & Communication
+[ ] Data mining/cleaning
+
+
+
+Python libraries
+ANN
+import keras
+import tensorflow
+import torch
+import theano
+NLP
+import ntlk
+General
+import sklearn
+import pylearn2
+import pattern
+import skimage
+Visualize
+import matplotlib.pyplot as plt
+import seaborn
+import ggplot
+import bokeh
+import geoplotlib
+import plotly
+import gleam
+import missingno
+
+
+
+
+
+Beginner:
+[ ] Titanic Data: predict survival of passengers
+[ ] Boston Housing: predict median value of occupied home
+[ ] Walmart sales forecasting: predict sales by departments, effect of sales
+[o] Iris data: predict flower class
+[ ] Loan Prediction: will loan be approved
+[ ] Bigmart sales: predict sales
+[ ] Time Series: predict traffic on new transport
+[ ] Wine Quality: predict wine Quality
+[ ] Turkiye Student eval: cluster data
+[ ] Heights and Weights: predict height or weight of person
+
+Intermediate:
+[ ] Hubway data: visualize data
+[ ] Text mining: Classify and categorize based on tags & labels
+[ ] Census income data:predict individuals' income > 50k
+[ ] Movie lens: make movie suggestions
+[ ] Black Friday: predict purchase amount
+[ ] Trip History: predict user class
+[ ] 5 million songs: predict release year
+[ ] Twitter classification: identify hate tweets
+
+Advanced:
+[ ] Yelp data: provide insights for operational improvements
+[ ] Chicago Crime: explore, provide insights & forecasts of Crime
+[ ] KDD cup: Yearly posed problem
+[ ] ImageNet Visual Recognition: localize objects, detect object in video
+[ ] Human activity recognition: predict activity
+[ ] Identify digits: identify digits in image
+[ ] Urban sound classification: classify sound types from audio
+[ ] Vox Celebrity: match voice to celebrity
+[ ] ImageNet: determined by image downloaded
+[ ] Detect age of indian actors: predict age
+[ ] Recommendation Engine: predict time to solve coding problem
+[ ] VisualQA: deep learning to answer open (provided) questions
+
+
+
+Kaggle Data suggestions
+Data is Beautiful
+The Pudding
+FiveThirtyEight
+Towards Data Science

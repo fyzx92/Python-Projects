@@ -6,18 +6,34 @@ Maxwell
 General Relativity
 Quantum Mechanics
 Navier Stokes
+evolvability
+economic simulation
+quadcopter
+three body
 
-Analyze:
-UNICEF
-data.gov.uk
-SEER cancer
-CDC cause of death
-Bureau Labor Statistics
-FBI Crimes
-Medicine Quality
+double pendulum
+Social card-based game
+color image - polygons
 
-Build/apply:
-Recurrent Networks
-Belief Networks
-Convolutional Networks
+summarize scientific articles
+summarize company goals and accomplishments for CV
+medical imaging
+minimizing gerrymandering: maximize vote efficiency
+polling station distribution
+LA bus line map - population density, income: dot product
+gather and label data from web w/ scraper
+music maker
+medical document management - key is hash of doctor id and validity argument, which is provided by source containing document
+
+Tools:
+Web scraper
+Hacking/security
+games/apps
+Web development
+Reinforcement learning
+Convolutional Neural network
+Belief Network
 Natural Language Processing
+Recurrent Network
+Generative Adversarial Network
+Dynamic architecture network

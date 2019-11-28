@@ -1,0 +1,126 @@
+\documentclass{amsart}
+
+\usepackage{amsmath}
+\usepackage{geometry}[margin=3cm]
+
+\newcommand*\mean[1]{\mathop{\overline{#1}}}
+
+\title{Scoring Logic: Patient choice of hospitals}
+\author{Bryce Burgess}
+\date{}
+\begin{document}
+\maketitle
+
+\section{Effective scoring}
+An effective scoring method fills a number of constraints (current methods do not necessarily quite fit). On the domain, the output of the scoring method should be in [0,1] (may change to [-1,1]). The minimum input should map to the minimum output, and the same goes for the maximum input and output. \\
+
+The slope must be monotonic: all mappings to new values should be unique. Whether the slope is positive or negative will be defined on a per-variable basis \\
+
+If a patient's choice and the measure of center on the hospital are the same (or close), the output score should reflect that it was neutral. \\
+
+If mostly low scores are available from the hospitals, a uniform patient distribution should be re-weighted to produce more high-scoring patients for that variable. If mostly high scores are available from the hospitals, a uniform patient distribution should be reweighted to produce more low-scoring patients for that variable. 
+
+\begin{table}[h]
+	\begin{tabular}{ll}
+		$v$ & any hospital variable, the value of a hospital variable taken from the hospital that the patient chose (e.g. number of beds, quality, ...)\\
+		$P$ & set of all patients and their associated data such as age, sex, ruralness, hospital choice, \\
+		$p$ & individual patient in $P$\\
+		$p(v)$ & value of variable $v$ for patient $j$\\
+		$p(hospital)$ & chosen hospital for patient $j$\\
+		$p_h$ & chosen hospital for patient $j$\\
+		$P^{\left[0,1\right]}(v)$ & patient variable values after compressing them to the range $[0,1]$\\
+		$H$ & set of all hospitals and their associated data\\
+		$H(v)$ & value of hospital variable $v$\\
+		$h$ & individual hospital $i$ and associated data\\
+		$H_p$ & list of hospitals to choose from for patient $j$\\
+		$\mean{H_p(v)}$ & mean of hospitals to choose from for variable $v$ and patient $j$\\
+		$\mean{H^{\left[0,1\right]}_p(v)}$&hospital mean of variable after compressing them to the range $[0,1]$\\
+		$\alpha(t)$ & multiplier dependent on a travel time $t$\\
+		$T(p, h)$ & travel time from a plz code to a given hospital\\
+		$max_{eff}(S)$ & $95^{\text{th}}$ percentile value of set $S$\\
+	\end{tabular}
+\end{table}
+
+
+
+
+\section{Selecting Hospitals}
+
+\subsection{Option 1: include all}
+include all hospitals
+
+$H_p = H$ for every patient $p$
+
+
+\subsection{Option 2: constant multiplier to chosen}
+$H_p$ includes $h$ if time from plz to $h$ is less than $\alpha_0$ times the distance to the chosen hospital:\\
+$$\alpha(t) = \alpha_0t$$
+where $\alpha_0$ is a constant.
+
+$H_p = \{h \ \forall \ h \in H \ s.t. \ T(p, h) < \alpha_0 T(p, p_h) \}$ options for patient $p$\\
+
+
+
+\subsection{Option 3: proportional multiplier to chosen}
+$H_p$ includes $H$ if time from plz to hospital is less than $\alpha(t)$ times the distance to the chosen hospital\\
+$$\alpha(t) = \log(t)t $$
+$H_p = \{h \ \forall \ h \in H \ s.t. \ T(p, p_h) < \log(T(p,p_h))T(p, p_h) \}$ options for patient $p$\\
+
+
+\subsection{Option 4: chosen raised to a constant}
+$H_p$ includes $h$ if time from plz to $h$ is less than the distance to the chosen hospital raised to the power $\alpha_0$:
+$$\alpha(t) = t^{\alpha_0}$$
+where $\alpha_0$ is a constant.
+
+$H_p = \{h \ \forall \ h \in H \ s.t. \ T(p, p_h) < T(p, p_h)^{\alpha_0} \}$ options for patient $p$\\
+
+\section{Linear Scoring}
+
+Linearly transform each patient value to fit within the range [0,1], based on the entire set of patient values. Additionally, anything above $max_{eff}$ is set to 1, as a way to mitigate the effects of outliers. In this way the set $P^{\left[0,1\right]}(v)$ is equal to:
+$$P^{\left[0,1\right]}(v) = \left\{ \min(\frac{p(v) - \min(P(v))}{\max_{eff}(P(v))}, 1) \right\}$$
+
+Linearly transform the hospital mean in the same way as the patient set, so they can still be meaningfully compared.
+$$\mean{H^{\left[0,1\right]}_p(v)} = \frac{\mean{H_p(v)} - \min(P(v))}{\max_{eff}(P(v))}$$
+
+If higher numbers are interpreted as more important, apply the exponent below, which is scaled by $\mean{H^{\left[0,1\right]}_p(v)}$. The logarithm base in the expression $\frac{\log(0.5)}{\log(\mean{H^{\left[0,1\right]}_p(v)})}$\footnotemark doesn't matter, as it equivalent to $\log_{\mean{H^{\left[0,1\right]}_p(v)}}(0.5)$ by the logarithm change of base formula:
+$$P^{score}(v) = \left\{p^{\left[0,1\right]}(v)^{\frac{\log(0.5)}{\log(\mean{H^{\left[0,1\right]}_p(v)})}} \right\}$$
+
+\footnotetext{In the case that $\mean{H^{\left[0,1\right]}_p(v)}$ is equal to zero, instead it is set equal to a near-zero positive real number whereas if $\log(\mean{H^{\left[0,1\right]}_p(v)})$ is equal to zero, it is set equal to a near-zero negative real number.}
+
+If lower numbers are interpreted as more important, and the change is the same as before, except that all $p^{\left[0,1\right]}(v)$ and $\mean{H^{\left[0,1\right]}_p(v)}$ are inverted within the range [0,1]\footnotemark:
+$$P^{score}(v) = \left\{\left(1-p^{\left[0,1\right]}(v)\right)^{\frac{\log(0.5)}{\log(1-\mean{H^{\left[0,1\right]}_p(v)})}} \right\}$$
+
+\footnotetext{In the case that $1-\mean{H^{\left[0,1\right]}_p(v)}$ is equal to zero, instead it is set equal to a near-zero positive real number whereas if $\log(1-\mean{H^{\left[0,1\right]}_p(v)})$ is equal to zero, it is set equal to a near-zero negative real number.}
+
+\begin{table}[h]
+	\begin{tabular}{llll}
+		&  $\mean{H^{\left[0,1\right]}_p(v)} = 0.25$ & $\mean{H^{\left[0,1\right]}_p(v)} = 0.5$ & $\mean{H^{\left[0,1\right]}_p(v)} = 0.75$\\
+		$p^{\left[0,1\right]}(v)$ = $0.25$&  $0.5$&     $0.25$&   $0.035$\\
+		$p^{\left[0,1\right]}(v)$ = $0.5$&   $0.707$&   $0.5$&    $0.188$\\
+		$p^{\left[0,1\right]}(v)$ = $0.75$&  $0.866$&   $0.75$&   $0.5$\\
+	\end{tabular}
+	\caption{table of patient choice values and hospital means. Note that when the hospital mean is equal ot 0.5, each patient value is unchanged, and any time that the patient value is equal to the hospital mean, the output score is 0.5, showing that the variable had no priority for that individual patient}
+\end{table}
+
+
+
+
+\section{Exponential Scoring}
+
+\begin{align}
+\text{if } \mean{H_p(v)} &= 0\text{ set it to } 0.01\\
+\text{if lower numbers are interpreted as better:}&\\
+P^{score}(v) &= \{2^{\left(-\frac{p(v)}{\mean{H_p(v)}}\right)}\}\\
+\text{otherwise:}&\\
+P^{score}(v) &= \{1-2^{\left(-\frac{p(v)}{\mean{H_p(v)}}\right)}\}
+\end{align}
+
+\begin{table}[h]
+	\begin{tabular}{llll}
+		&$\frac{p(v)}{\mean{H_p(v)}} =0.5$&$\frac{p(v)}{\mean{H_p(v)}} = 1$ &$\frac{p(v)}{\mean{H_p(v)}} = 2$\\
+		$P^{score}(v)$ &$0.25$ & $0.5$ &  $0.71$
+	\end{tabular}
+	\caption{table of output scores for variables that are positively scaling (bigger is better), given some possible ratios of inputs. These are not compressed as in linear scoring, so both $p(v)$ and $\mean{H_p(v)}$ cover a very large possible domain.}
+\end{table}
+
+\end{document}

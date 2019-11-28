@@ -1,0 +1,11 @@
+
+
+matplotlib
+scipy
+numpy
+pandas
+
+IPython
+
+tensorflow
+jupyter

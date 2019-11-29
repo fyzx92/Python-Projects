@@ -8,3 +8,8 @@
 
 # exclude existing double pendulum animation
 ./double_pendulum_matplotlib.py
+
+# exclude desired files from TUB project
+./Data_Projects/Patient_Choice/05_INKAR/**
+./Data_Projects/Patient_Choice/Intermediate_Files/tt_plz*
+./Data_Projects/Patient_Choice/Results/preference_scores_RPE*

@@ -9,6 +9,20 @@ https://towardsdatascience.com/5-resources-to-inspire-your-next-data-science-pro
 [o] Data visualization & Communication
 [ ] Data mining/cleaning
 
+Analyze:
+UNICEF
+data.gov.uk
+SEER cancer
+CDC cause of death
+Bureau Labor Statistics
+FBI Crimes
+Medicine Quality
+
+Build/apply:
+Recurrent Networks
+Belief Networks
+Convolutional Networks
+Natural Language Processing
 
 
 Python libraries

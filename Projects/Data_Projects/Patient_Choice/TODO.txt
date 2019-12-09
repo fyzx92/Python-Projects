@@ -1,0 +1,294 @@
+
+Which factors most strongly influence a patient's choice of hospital?
+Do patients of different demographics choose differently?
+
+\[T]/
+ (@)
+ \|/
+
+# tasks to implement
+[ ] files to delete:
+	[ ] Patient & hospital features, except for dummy data
+	[ ] Intermediate files, except travel time lookup table
+
+[ ] send Justus applicaltion
+[ ] upload project folder to TUB Cloud
+
+[o] something about log in linear scoring gave invalid value: QI: h_log=np.log(hmean), linear scoring
+	can't seem to isolate issue...
+
+[ ] check that things are not modified unnecessarily
+	run script, then try running individual section, repeat
+	[ ] somewhere, travel_time_selected_TA is being modified - fix this
+		[ ] categorize rank table?
+		[ ] travel_time_linear_score?
+		[ ] travel_time_exponential_score?
+
+[ ] what to do if scoring max (effective max) is zero?
+	[ ] if hospital mean (scoring) is 0, what to set values to?
+
+[ ] speed up linear scoring? (multiprocessing?)
+
+[ ] implement 2016 hospital data
+	[ ] update clean_hospital_data function
+	[ ] implement method for combining years of hospital data
+	[?] remove duplicate hospital sites
+	[o] include year independent ID for hospitals
+	[o] update index and column assignment
+		[o] what to use for hospitals across years?
+
+[ ] fix travel time score histogram - categories
+
+[ ] sensitivity analysis
+	[ ] linear scoring effective maximum
+	[ ] categorizing number of quantiles
+	[ ] linear vs exponential patient scoring
+	[ ] linear vs exponential tt scoring
+	[ ] age groupings
+	[ ] travel time rank cap
+
+[ ] check and clean variable and variable names
+
+[o] rename files to be clearer
+
+[x] get full travel time table
+	[o] implement alternate time category systems (4 closest, + others) (logarithmic distance, normalized...)
+	[x] get choices from other treatment areas and select by treatment area (or create separate files)
+	[x] add hospital names to columns when in lookup mode
+	[x] add incremental saves, and filling only empty rows
+	[x] add category to patient data and full data
+	[-] speed up travel time table construction (parallel? C? dictionaries?)
+	[x] build full travel time comparison table, no quantiles, all treatment areas
+		[x] CHE
+		[ ] KOLREK
+		[ ] KNIETEP
+		[x] RPE
+
+[ ] descriptive statistics of original data set
+
+
+
+########################################################################################
+----------------------------------------------------------------------------------------
+########################################################################################
+
+[x] choice data file documentation
+
+[x] update pchoice assignment so hospital type is numerical
+	[x] record mapping
+	[x] integrate number system for hospital type to data_pchoice and results
+
+[x] document new variables in config.py, options to functions
+
+[x] order function options to be the same in declaration and call
+
+[x] update docstrings scoring, categorize_vars
+
+[x] hospital type in decision tree
+
+[x] sensitivity variables into config.py
+
+[x] documentation for numerical file
+
+[x] fill in User README
+	[x] function descriptions
+	[x] first time, prerequisites
+	[x] raw data file descriptions
+	[x] calculated data file descriptions
+	[x] examples
+	[x] how to do sensitivity analysis
+
+[x] note default values for inputs in readme
+
+[x] separate data prep and scoring?
+	[x] update readme with new functions
+	[x] update readme with new runnable files
+
+[x] read options from external file
+
+[x] check functioning pid TT functions
+
+[x] remove unneeded functions
+
+[x] more flexible patient and hospital subsetting
+	[x] allow selecting value for category
+	[x] allow selecting multiple values
+	[x] test
+
+[x] how to export decision tree structure
+
+[x] plot cross validation scores
+
+[x] have random forest for accuracy
+	[x] tune number of trees
+	[x] tune tree depth
+
+[x] write out scoring logic formulaically (linear, exponential, type)
+
+[x] may also have duplicates of ik_site_number in data_pchoice
+
+[x] allow option to change hmean in linear and exponential to be calculated from varying sample size, dependent on chosen hospital
+	[x] logarithmic
+	[x] simple multiple
+
+[x] CHE, KOLREK, KNIETEP is dropping almost all travel time entries, most rows have at least one missing value
+	column to table transformation
+
+[x] implement 2016 patient data
+	[x] match idx_ik to ik_site number with ops data and hospital ta matching table
+		[x] RPE
+		[x] CHE
+		[x] KOLREK
+		[x] KNIETEP
+	[x] call justus' colleague for matched data David Kuklinski 01703345162
+	[x] update index and column assignment
+
+[x] remove decimals from group labels
+
+
+[x] train decision tree - use patient data to guess hospital group
+	[x] categorize full data, especially string variables
+	[x] incorporate travel time information
+		[x] set patient categories from quantiles patients' travel time ranks relative to other patients' choices, record quantile breakpoints
+			travel time quantiles change based on defined analysis group(s)
+	[x] enough features for distinguishing hospitals? NO
+		[x] train and test errors - not enough variables
+		[x] verify that algorithm uses multiple instances of same variable (almost certainly yes)
+
+
+[x] check for duplicated patients, duplicated indices
+	[x] reindex ids if data is different from others
+	[x] test
+
+[x] download new inkar file tub cloud
+	[x] integrate into algorithm
+
+[x] make option to save file
+	[x] fix file checking
+
+[x] make number of quantiles more flexible in categorizing
+
+[x] make age categories more adjustable
+
+[x] send justus RPE plzs that don't have ruralness data
+
+[x] how many patients have matching Ruralness data
+
+[x] adjust exponential scoring to use hmean instead of patient median
+
+[x] histograms in scoring, return full data frame, do post analysis with hists, means medians, etc.
+
+[x] normalize scores to hospital availability
+	[x] check functionality
+		[x] modify scaling by hospital mean
+		[x] verify scaling
+	[x] return scores
+	[x] apply to exponential scoring
+	[x] adjust hospital type (test)
+
+[x] in scoring, change mean calculation to after hospital availability scaling
+	[x] test
+
+[x] option to use mean or median for scoring QI
+	[x] test
+
+[x] account for availability for hosptial type, improve interpretation
+
+[x] implement option to subset by patient groups
+
+[x] allow subdividing pchoice by patient group
+	[x] include both groups in pchoice
+		[x] add hospital groups to uncategorized pchoice
+		[x] add patient groups to uncategorized pchoice
+		[x] fix error with hospital grouping, needs to be integer, 
+			QI not getting categorized
+
+[x] when saving, index is being named
+
+[x] alternate output for grouping -> on categorized file or uncategorized, return both?
+	by default returns group indexed by versid, can provide another file for appending
+
+[x] save results
+
+[x] fix missing plzs when ranking
+
+[x] categorizing hospitals malfunction
+
+[x] fill in docstrings
+
+[x] all from scratch option
+
+[x] all drop na option
+
+[x] how does patient attribute data contribute to research question
+	subdividing
+
+[x] what are treatment area meanings?
+	CHE cholosystectomy
+	RPE rectal prostatectomy
+	KOLREK colorectal resection
+	KNIETEP knee replacement
+
+[x] test travel time categorization (function, speed)
+
+[x] create travel time categorizing function
+
+[x] check travel time subsetting, issue with missing time calculations
+	should be fine, need justus feedback
+
+[x] change to testing with RPE for speed
+
+[x] restructure travel time lookup into table -> on server
+	[x] check that function works, obvious optimizations
+
+[x] build RPE files
+
+[x] implement column sum analysis
+
+[x] verify travel time restructuring calculation
+
+[x] test speed of travel time scoring (compare)
+
+[x] do travel time alternatives also offer needed treatment?
+
+[x] change save file names to include treatment area
+	[x] in data extraction
+
+[x] import raw data function centralize analysis variables as input to extracting hospital and patient data
+
+[x] prune groups (80%) to reduce testing time
+	[x] check that function actually works
+
+[x] check that all new tables use nans in place of empty values
+	decide whether to remove rows(current standard), remove columns, replace with alternate value
+
+[x] change is_Achi and equivalent names to be uniform
+
+[x] rename quality variables to QI
+	mort90 is for KOLREK, transblut is for CHE, REOP1y for RPE, REV1Y KNIETEP
+
+[x] hospital groups- quality, dedicated department, case volume
+	[x] add group identifier to each relevant hospital
+		[x] construct group IDs
+		[x] place into target dataframe
+
+[x] patient groups - clustering (age (5), severity(3), ruralness (2), (treatment area?))
+	e.g. old, rural, complex vs old, urban, complex
+	30 unique possible groups
+		account for at least 85%, include any groups w/ more than 2%
+	[x] need to break down categorize function into smaller functions
+	[x] add group identifier to each relevant patient
+		[x] construct group IDs
+		[x] place into target dataframe
+
+[x] create travel time scoring functions
+
+[x] check age categorizing, some are being missed (50, 80, 60, 70...)
+
+[x] extract variables quitting when assigning bulk data sometimes
+	data_push[c][:] = data_pull.loc[:,c]
+	Must have equal len keys and value when setting with an iterable
+
+[x] fix nans in university association scoring
+
+[x] check that saved data sets are filtered for given treatment area (travel times[x], patient[x], hospital[x])

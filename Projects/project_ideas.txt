@@ -25,6 +25,53 @@ gather and label data from web w/ scraper
 music maker
 medical document management - key is hash of doctor id and validity argument, which is provided by source containing document
 
+Computer Science:
+Task Tracker
+Bug Tracker
+File Transfer Protocol Client (secure, web, desktop, or cli)
+HTTP Server
+Basic OS
+bandwidth monitor
+cipher tool
+
+Personal Finance:
+net worth calculator and tracker
+deal finder
+tax predictor
+expense tracker
+financial independence calculator
+bill splitter
+
+Games and Simulations:
+random name generator
+game of life
+procedural map maker
+RPG Character generator
+interactive fiction
+
+AI:
+tic-tac-toe engine
+chess engine
+chatbot
+spam classifier
+
+Entertainment:
+spoiler blocker
+
+Fun:
+pixel art generator
+music suggestor
+temperature logger
+microlearning app
+daily desktop background
+
+Daily Life:
+lunch picker
+date planner
+track collections
+weather checker
+
+
 Tools:
 Web scraper
 Hacking/security
@@ -37,3 +84,8 @@ Natural Language Processing
 Recurrent Network
 Generative Adversarial Network
 Dynamic architecture network
+GIS
+SQL
+
+
+
